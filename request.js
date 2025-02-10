@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Validate OTP
         const otp = otpInput.value;
-        if (!otp || isNaN(otp) || otp.length !== 6) {
-            alert("Please enter a valid 6-digit OTP.");
+        if (!otp || isNaN(otp)) {
+            alert("Please enter a valid OTP.");
             return;
         }
 
