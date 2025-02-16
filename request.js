@@ -1,40 +1,44 @@
-// Wait for the DOM content to be fully loaded
-document.addEventListener("DOMContentLoaded", function() {
-    // Get form and OTP input elements
-    const form = document.getElementById('request-form');
-    const otpInput = document.getElementById('otp');
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDobwvOdyiwBCjNNBUyRNStwrMQmhFv3vY",
+  authDomain: "dormdash-1becd.firebaseapp.com",
+  databaseURL: "https://dormdash-1becd-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "dormdash-1becd",
+  storageBucket: "dormdash-1becd.firebasestorage.app",
+  messagingSenderId: "789434000901",
+  appId: "1:789434000901:web:a8f28358c7e0091b2ede6c"
+};
 
-    // Add event listener to handle form submission
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent the form from submitting the traditional way
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-        // Validate OTP
-        const otp = otpInput.value;
-        if (!otp || isNaN(otp)) {
-            alert("Please enter a valid OTP.");
-            return;
-        }
+// Form Submission
+document.getElementById("request-form").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-        // Validate that all required fields are filled
-        const requiredFields = form.querySelectorAll('[required]');
-        for (let field of requiredFields) {
-            if (!field.value) {
-                alert(`Please fill in the ${field.previousElementSibling.textContent}`);
-                return;
-            }
-        }
+  // Get form values
+  const name = document.getElementById("full-name").value;
+  const orderNumber = document.getElementById("order-number").value;
+  const serviceName = document.getElementById("service-name").value;
+  const courierService = document.getElementById("courier-service").value;
+  const packageSize = document.getElementById("package-size").value;
+  const arrivalTime = document.getElementById("arrival-time").value;
+  const otp = document.getElementById("otp").value;
 
-        // If all validations pass, simulate form submission
-        const formData = new FormData(form);
-        let formDetails = '';
-        formData.forEach((value, key) => {
-            formDetails += `${key}: ${value}\n`;
-        });
-
-        // Display the form data in an alert (this simulates form submission)
-        alert("Form submitted successfully! Here are the details:\n\n" + formDetails);
-
-        // Optionally, you could clear the form after submission
-        form.reset();
-    });
+  // Push data to Firebase Realtime Database
+  db.ref("orders").push({
+    name,
+    orderNumber,
+    serviceName,
+    courierService,
+    packageSize,
+    arrivalTime,
+    otp
+  }).then(() => {
+    alert("Request Submitted Successfully!");
+    document.getElementById("request-form").reset();
+  }).catch(error => {
+    console.error("Error submitting request: ", error);
+  });
 });
