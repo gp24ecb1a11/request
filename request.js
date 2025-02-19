@@ -13,10 +13,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Handle request submission
+// Handle form submission
 document.getElementById("request-form").addEventListener("submit", function(event) {
     event.preventDefault();
 
+    // Get values from form
     const fullName = document.getElementById("full-name").value;
     const orderNumber = document.getElementById("order-number").value;
     const serviceName = document.getElementById("service-name").value;
@@ -25,6 +26,13 @@ document.getElementById("request-form").addEventListener("submit", function(even
     const arrivalTime = document.getElementById("arrival-time").value;
     const otp = document.getElementById("otp").value;
 
+    // Validate form (basic)
+    if (!fullName || !orderNumber || !serviceName || !arrivalTime || !otp) {
+        alert("Please fill all required fields!");
+        return;
+    }
+
+    // Push request to Firebase
     const newRequestRef = database.ref("requests").push();
     newRequestRef.set({
         fullName,
@@ -39,6 +47,6 @@ document.getElementById("request-form").addEventListener("submit", function(even
         alert("Request submitted successfully!");
         document.getElementById("request-form").reset();
     }).catch(error => {
-        console.error("Error submitting request: ", error);
+        console.error("Error submitting request:", error);
     });
 });
